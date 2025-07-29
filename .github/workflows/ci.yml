@@ -61,6 +61,7 @@ jobs:
         with:
           name: scsp-localify
           path: package
+      # test
       - uses: actions/upload-artifact@v4
         with:
           name: scsp-localify-dll
