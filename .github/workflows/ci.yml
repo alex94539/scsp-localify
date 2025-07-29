@@ -14,7 +14,7 @@ on:
       - 'deps/**'
       - 'src/**'
       - 'utils/**'
-      - 'ci.yml'
+      - '.github/workflows/ci.yml'
   pull_request:
       paths:
       - '**.lua'
@@ -29,7 +29,7 @@ on:
       - 'deps/**'
       - 'src/**'
       - 'utils/**'
-      - 'ci.yml'
+      - '.github/workflows/ci.yml'
 jobs:
   build:
     runs-on: windows-2019
