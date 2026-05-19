@@ -125,23 +125,24 @@ extern std::vector<std::pair<std::string, std::string>> savedTransformOverriding
 
 class CharaParam_t {
 public:
-	CharaParam_t(float height, float bust, float head, float arm, float hand) :
-		height(height), bust(bust), head(head), arm(arm), hand(hand) {
+	CharaParam_t(float height, float bust, float head, float arm, float hand, float waist) :
+		height(height), bust(bust), head(head), arm(arm), hand(hand), waist(waist) {
 		objPtr = NULL;
 		updateInitParam();
 	}
 
-	CharaParam_t(float height, float bust, float head, float arm, float hand, void* objPtr) :
-		height(height), bust(bust), head(head), arm(arm), hand(hand), objPtr(objPtr) {
+	CharaParam_t(float height, float bust, float head, float arm, float hand, float waist, void* objPtr) :
+		height(height), bust(bust), head(head), arm(arm), hand(hand), waist(waist), objPtr(objPtr) {
 		updateInitParam();
 	}
 
-	void UpdateParam(float* height, float* bust, float* head, float* arm, float* hand) const {
+	void UpdateParam(float* height, float* bust, float* head, float* arm, float* hand, float* waist) const {
 		*height = this->height;
 		*bust = this->bust;
 		*head = this->head;
 		*arm = this->arm;
 		*hand = this->hand;
+		*waist = this->waist;
 	}
 
 	void SetObjPtr(void* ptr) {
@@ -170,6 +171,7 @@ public:
 		head = init_head;
 		arm = init_arm;
 		hand = init_hand;
+		waist = init_waist;
 	}
 
 	void Apply();
@@ -180,6 +182,7 @@ public:
 	float head;
 	float arm;
 	float hand;
+	float waist;
 	bool gui_real_time_apply = false;
 private:
 	void updateInitParam() {
@@ -188,6 +191,7 @@ private:
 		init_head = head;
 		init_arm = arm;
 		init_hand = hand;
+		init_waist = waist;
 	}
 
 	void* objPtr;
@@ -196,6 +200,7 @@ private:
 	float init_head;
 	float init_arm;
 	float init_hand;
+	float init_waist;
 };
 
 

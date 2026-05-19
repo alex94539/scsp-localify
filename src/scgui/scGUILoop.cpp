@@ -230,6 +230,7 @@ namespace SCGUILoop {
 				INPUT_AND_SLIDER_FLOAT("Head##base", &baseParam.head, -1.5, 1.5);
 				INPUT_AND_SLIDER_FLOAT("Arm##base", &baseParam.arm, -1.5, 1.5);
 				INPUT_AND_SLIDER_FLOAT("Hand##base", &baseParam.hand, -1.5, 1.5);
+				INPUT_AND_SLIDER_FLOAT("Waist##base", &baseParam.waist, -1.5, 1.5);
 				if (ImGui::Button("Apply##base")) {
 					baseApply = true;
 				}
@@ -260,6 +261,7 @@ namespace SCGUILoop {
 						FOR_INPUT_AND_SLIDER_FLOAT("Head", &i.second.head, 0.0, 2.0, i.first);
 						FOR_INPUT_AND_SLIDER_FLOAT("Arm", &i.second.arm, 0.0, 2.0, i.first);
 						FOR_INPUT_AND_SLIDER_FLOAT("Hand", &i.second.hand, 0.0, 2.0, i.first);
+						FOR_INPUT_AND_SLIDER_FLOAT("Waist", &i.second.waist, 0.0, 2.0, i.first);
 						if (ImGui::Button(("Apply##" + i.first).c_str()) || baseApply) {
 							i.second.ApplyOnMainThread();
 						}

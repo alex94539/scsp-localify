@@ -22,7 +22,7 @@ std::function<void()> on_hotKey_0;
 bool needPrintStack = false;
 std::vector<std::pair<std::pair<int, int>, int>> replaceDressResIds{};
 std::map<std::string, CharaParam_t> charaParam{};
-CharaParam_t baseParam(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+CharaParam_t baseParam(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 std::vector<std::function<bool()>> mainThreadTasks{};  // 返回 true，执行后移除列表；返回 false，执行后不移除
 
 std::map<int, CharaSwayStringParam_t> charaSwayStringOffset{};
@@ -231,13 +231,13 @@ Il2CppString* (*environment_get_stacktrace)();
 
 
 void CharaParam_t::Apply() {
-	const auto ApplyParamFunc = reinterpret_cast<void (*)(void*, float, float, float, float, float)>(
+	const auto ApplyParamFunc = reinterpret_cast<void (*)(void*, float, float, float, float, float, float)>(
 		HOOK_GET_ORIG(AssembleCharacter_ApplyParam)
 		);
 	auto currObjPtr = getObjPtr();
 	if (currObjPtr) {
 		ApplyParamFunc(currObjPtr, height + baseParam.height, bust + baseParam.bust,
-			head + baseParam.head, arm + baseParam.arm, hand + baseParam.hand);
+			head + baseParam.head, arm + baseParam.arm, hand + baseParam.hand, waist + baseParam.waist);
 	}
 }
 
@@ -2191,7 +2191,7 @@ namespace
 		return aliveCount;
 	}
 
-	void AssembleCharacter_ApplyParam_hook(void* mdl, float height, float bust, float head, float arm, float hand) {
+	void AssembleCharacter_ApplyParam_hook(void* mdl, float height, float bust, float head, float arm, float hand, float waist) {
 		if (g_enable_chara_param_edit) {
 			static auto get_ObjectName = reinterpret_cast<Il2CppString * (*)(void*)>(
 				il2cpp_symbols::get_method_pointer(
@@ -2227,14 +2227,14 @@ namespace
 			}
 			if (auto it = charaParam.find(showObjName); it != charaParam.end()) {
 				it->second.SetObjPtr(mdl);
-				it->second.UpdateParam(&height, &bust, &head, &arm, &hand);
+				it->second.UpdateParam(&height, &bust, &head, &arm, &hand, &waist);
 				return it->second.Apply();
 			}
 			else {
-				charaParam.emplace(showObjName, CharaParam_t(height, bust, head, arm, hand, mdl));
+				charaParam.emplace(showObjName, CharaParam_t(height, bust, head, arm, hand, waist, mdl));
 			}
 		}
-		return HOOK_CAST_CALL(void, AssembleCharacter_ApplyParam)(mdl, height, bust, head, arm, hand);
+		return HOOK_CAST_CALL(void, AssembleCharacter_ApplyParam)(mdl, height, bust, head, arm, hand, waist);
 	}
 
 	HOOK_ORIG_TYPE MainThreadDispatcher_LateUpdate_orig;
