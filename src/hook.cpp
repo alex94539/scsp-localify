@@ -231,13 +231,31 @@ Il2CppString* (*environment_get_stacktrace)();
 
 
 void CharaParam_t::Apply() {
-	const auto ApplyParamFunc = reinterpret_cast<void (*)(void*, float, float, float, float, float, float)>(
+	const auto ApplyParamFunc = reinterpret_cast<void (*)(void*, float, float, float, float, float)>(
 		HOOK_GET_ORIG(AssembleCharacter_ApplyParam)
 		);
 	auto currObjPtr = getObjPtr();
 	if (currObjPtr) {
 		ApplyParamFunc(currObjPtr, height + baseParam.height, bust + baseParam.bust,
-			head + baseParam.head, arm + baseParam.arm, hand + baseParam.hand, waist + baseParam.waist);
+			head + baseParam.head, arm + baseParam.arm, hand + baseParam.hand);
+
+		if (waistTransform == nullptr) {
+			il2cpp_symbols::EnumerateAllChildrenGameObjects((Il2CppObject*)currObjPtr, [this](Il2CppObject* go, Il2CppObject* tf) -> int {
+				std::string name = reflection::UnityObject_get_name(go)->ToUtf8String();
+				if (name == "Koshi" || name == "Spine" || name == "Waist" || name == "Pelvis" || name == "koshi") {
+					this->waistTransform = tf;
+					return 0;
+				}
+				return 1;
+			});
+		}
+
+		if (waistTransform != nullptr) {
+			static auto Unity_set_localScale = il2cpp_symbols_logged::get_method_pointer("UnityEngine.CoreModule.dll", "UnityEngine", "Transform", "set_localScale", 1);
+			float scale = 1.0f + waist + baseParam.waist;
+			Vector3_t scaleVec = { scale, scale, scale };
+			reinterpret_cast<void(*)(void*, Vector3_t)>(Unity_set_localScale)(waistTransform, scaleVec);
+		}
 	}
 }
 
@@ -2191,7 +2209,7 @@ namespace
 		return aliveCount;
 	}
 
-	void AssembleCharacter_ApplyParam_hook(void* mdl, float height, float bust, float head, float arm, float hand, float waist) {
+	void AssembleCharacter_ApplyParam_hook(void* mdl, float height, float bust, float head, float arm, float hand) {
 		if (g_enable_chara_param_edit) {
 			static auto get_ObjectName = reinterpret_cast<Il2CppString * (*)(void*)>(
 				il2cpp_symbols::get_method_pointer(
@@ -2227,14 +2245,14 @@ namespace
 			}
 			if (auto it = charaParam.find(showObjName); it != charaParam.end()) {
 				it->second.SetObjPtr(mdl);
-				it->second.UpdateParam(&height, &bust, &head, &arm, &hand, &waist);
+				it->second.UpdateParam(&height, &bust, &head, &arm, &hand);
 				return it->second.Apply();
 			}
 			else {
-				charaParam.emplace(showObjName, CharaParam_t(height, bust, head, arm, hand, waist, mdl));
+				charaParam.emplace(showObjName, CharaParam_t(height, bust, head, arm, hand, 0.0f, mdl));
 			}
 		}
-		return HOOK_CAST_CALL(void, AssembleCharacter_ApplyParam)(mdl, height, bust, head, arm, hand, waist);
+		return HOOK_CAST_CALL(void, AssembleCharacter_ApplyParam)(mdl, height, bust, head, arm, hand);
 	}
 
 	HOOK_ORIG_TYPE MainThreadDispatcher_LateUpdate_orig;

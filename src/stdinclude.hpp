@@ -136,13 +136,12 @@ public:
 		updateInitParam();
 	}
 
-	void UpdateParam(float* height, float* bust, float* head, float* arm, float* hand, float* waist) const {
+	void UpdateParam(float* height, float* bust, float* head, float* arm, float* hand) const {
 		*height = this->height;
 		*bust = this->bust;
 		*head = this->head;
 		*arm = this->arm;
 		*hand = this->hand;
-		*waist = this->waist;
 	}
 
 	void SetObjPtr(void* ptr) {
@@ -184,6 +183,7 @@ public:
 	float hand;
 	float waist;
 	bool gui_real_time_apply = false;
+	Il2CppObject* waistTransform = nullptr;
 private:
 	void updateInitParam() {
 		init_height = height;
